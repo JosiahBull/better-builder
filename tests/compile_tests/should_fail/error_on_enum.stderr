@@ -1,0 +1,10 @@
+error: BetterBuilder can only be derived on structs.
+ --> tests/compile_tests/should_fail/error_on_enum.rs:4:1
+  |
+4 | / enum Cart {
+5 | |     Owner(String),
+6 | |     NumWheels(u8),
+7 | |     NumSeats(u8),
+8 | |     Inventory(Vec<String>),
+9 | | }
+  | |_^

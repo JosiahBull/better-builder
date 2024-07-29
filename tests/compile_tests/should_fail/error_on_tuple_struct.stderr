@@ -1,0 +1,10 @@
+error: BetterBuilder can only be derived on structs with named fields.
+  --> tests/compile_tests/should_fail/error_on_tuple_struct.rs:6:1
+   |
+6  | / struct Cart(
+7  | |     String,
+8  | |     u8,
+9  | |     Option<u8>,
+10 | |     Vec<String>,
+11 | | );
+   | |__^

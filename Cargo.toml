@@ -1,0 +1,29 @@
+[package]
+name = "better-builder"
+version = "0.1.0"
+edition = "2021" # TODO, we can probably change this to 2018.
+authors = ["Josiah Bull <josiah.bull7@gmail.com>"]
+description = "A library to derive an improved builder pattern for structs, leveraging Rust's type system."
+license = "MIT or Apache-2.0"
+categories = ["development-tools", "rust-patterns"]
+keywords = ["derive", "macro", "builder", "setter", "struct"]
+readme = "README.md"
+publish = true
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = {version = "2.0.72", features = ["extra-traits"]}
+quote = "1.0.36"
+
+[dev-dependencies]
+trybuild = "1.0.97"
+better-builder = { path = "." }
+
+[lints.rustc]
+rust_2018_idioms = "warn"
+
+[lints.clippy]
+pedantic = "warn"
+nursery = "warn"
