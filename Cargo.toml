@@ -22,7 +22,7 @@ quote = "1.0.36"
 trybuild = "1.0.97"
 better-builder = { path = "." }
 
-[lints.rustc]
+[lints.rust]
 rust_2018_idioms = "warn"
 
 [lints.clippy]
