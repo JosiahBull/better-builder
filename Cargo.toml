@@ -10,6 +10,7 @@ categories = ["development-tools", "rust-patterns"]
 keywords = ["derive", "macro", "builder", "setter", "struct"]
 readme = "README.md"
 publish = true
+exclude = ["tests/*", ".github/*"]
 
 [lib]
 proc-macro = true
