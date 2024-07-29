@@ -1,0 +1,64 @@
+name: CI
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+env:
+  TOOLCHAIN_PROFILE: minimal
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          # Ensure compatability with the MSRV on all platforms.
+          - os: windows-latest
+            rust: 1.59.0
+          - os: macos-latest
+            rust: 1.59.0
+          - os: ubuntu-latest
+            rust: 1.59.0
+          # Test that the library compiles on ubuntu on the latest stable and nightly branches.
+          - os: ubuntu-latest
+            rust: stable
+          - os: ubuntu-latest
+            rust: nightly
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v4
+      - name: Set up Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: ${{ env.TOOLCHAIN_PROFILE }}
+          toolchain: ${{ matrix.rust }}
+          override: true
+      - name: Setup Rust cache
+        uses: Swatinem/rust-cache@v2
+      - name: Install tarpaulin (Linux only)
+        if: runner.os == 'Linux'
+        run: cargo install cargo-tarpaulin
+      - name: Run tests
+        if: runner.os != 'Linux'
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --all-features --all
+      - name: Run tarpaulin (Linux only)
+        if: runner.os == 'Linux'
+        run: cargo tarpaulin --out Xml
+      - name: Upload coverage to Codecov (Linux only, Latest only)
+        if: runner.os == 'Linux' && matrix.rust == 'stable'
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./cobertura.xml
+          fail_ci_if_error: true
+          flags: unittests

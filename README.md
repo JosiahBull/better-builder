@@ -1,5 +1,7 @@
 # BetterBuilder
 
+[![codecov](https://codecov.io/github/JosiahBull/better-builder/graph/badge.svg?token=qqd6LSTTda)](https://codecov.io/github/JosiahBull/better-builder)
+
 This rust crate aims to create better type-safe builders. Builders must fully provide all required and any optional fields before the end type can be instantiated.
 
 tldr; No more `.build()?`, just `.build()` - and leverage the Rust type system to your advantage!
@@ -12,7 +14,7 @@ Run the command:
 cargo add better_builder
 ```
 
-**Cargol Toml**
+**Cargo Toml**
 
 ```toml
 better_builder = "0.1"
