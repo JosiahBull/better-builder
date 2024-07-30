@@ -16,9 +16,11 @@ jobs:
     strategy:
       matrix:
         include:
+          - os: ubuntu-latest
           - os: windows-latest
           - os: macos-latest
-          - os: ubuntu-latest
+      fail-fast: true
+      max-parallel: 1
     permissions:
       contents: read
 

@@ -9,8 +9,7 @@ struct Cart {
     num_seats: Option<u8>,
 }
 
-#[test]
-fn all_optional() {
+fn main() {
     let t = Cart::builder()
         .owner(Some("Alice".to_string()))
         .num_wheels(Some(4))
