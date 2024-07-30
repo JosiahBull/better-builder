@@ -305,8 +305,8 @@ fn implementation_better_builder(input: &syn::DeriveInput) -> Result<TokenStream
 
         let builder = match struct_data.fields().get(index + 1) {
             Some(next_field) if !next_field.is_optional() => {
-                let next_builder_name =
-                next_field.generate_builder_name(struct_data.struct_name(), &mut other_builders);
+                let next_builder_name = next_field
+                    .generate_builder_name(struct_data.struct_name(), &mut other_builders);
 
                 quote! {
                     #visibility struct #builder_name {
@@ -322,7 +322,7 @@ fn implementation_better_builder(input: &syn::DeriveInput) -> Result<TokenStream
                         }
                     }
                 }
-            },
+            }
             _ => {
                 let final_builder_name = struct_data.final_builder_name();
                 let optional_fields = struct_data.optional_names();
