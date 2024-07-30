@@ -72,8 +72,7 @@ pub fn derive_better_builder(item: TokenStream) -> TokenStream {
                     .segments
                     .iter()
                     .next()
-                    .map(|segment| segment.ident != "Option")
-                    .unwrap_or(false),
+                    .map_or(false, |segment| segment.ident != "Option"),
                 _ => false,
             };
 
