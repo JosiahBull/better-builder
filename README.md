@@ -7,13 +7,14 @@ tldr; No more `.build()?`, just `.build()` - and leverage the Rust type system t
 ## Installation
 
 **Cargo Add**
+
 Run the command:
 
 ```shell
 cargo add better_builder
 ```
 
-**Cargo Toml**
+**Cargo.toml**
 
 ```toml
 better_builder = "0.1.0"
