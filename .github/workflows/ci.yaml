@@ -49,10 +49,10 @@ jobs:
           readme_msrv=$(grep -oP '\(MSRV\) is `\K([0-9]+\.[0-9]+\.[0-9]+)' README.md)
 
           # Extract the MSRV from .github/workflows/test.yaml
-          test_msrv=$(grep -oP 'RUST_VERSION: \K([0-9]+\.[0-9]+\.[0-9]+)' .github/workflows/test.yaml)
+          test_msrv=$(grep -oP 'RUST_TOOLCHAIN: \K([0-9]+\.[0-9]+\.[0-9]+)' .github/workflows/test.yaml)
 
           # Extract the MSRV from .github/workflows/ci.yaml
-          ci_msrv=$(grep -oP 'RUST_VERSION: \K([0-9]+\.[0-9]+\.[0-9]+)' .github/workflows/ci.yaml)
+          ci_msrv=$(grep -oP 'RUST_TOOLCHAIN: \K([0-9]+\.[0-9]+\.[0-9]+)' .github/workflows/ci.yaml)
 
           # Extract the MSRV from rust-toolchain
           toolchain_msrv=$(cat rust-toolchain)
