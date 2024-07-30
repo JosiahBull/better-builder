@@ -10,7 +10,8 @@ struct Cart {
     inventory: Vec<String>,
 }
 
-fn main() {
+#[test]
+fn basic_case() {
     let t = Cart::builder()
         .owner("Alice".to_string())
         .num_wheels(4)

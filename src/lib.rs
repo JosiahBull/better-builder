@@ -39,17 +39,21 @@ pub fn derive_better_builder(item: TokenStream) -> TokenStream {
             data
         }
         syn::Data::Struct(_) => {
+            // SAFETY: This is a compile time error, which is not included in coverage. We have a test
+            // for this specific case in: tests/compile_tests/should_fail/error_on_tuple_struct.rs
             return syn::Error::new_spanned(
                 input,
                 "BetterBuilder can only be derived on structs with named fields.",
             )
             .to_compile_error()
-            .into()
+            .into();
         }
         _ => {
+            // SAFETY: This is a compile time error, which is not included in coverage. We have a test
+            // for this specific case in: tests/compile_tests/should_fail/error_on_enum.rs
             return syn::Error::new_spanned(input, "BetterBuilder can only be derived on structs.")
                 .to_compile_error()
-                .into()
+                .into();
         }
     };
 

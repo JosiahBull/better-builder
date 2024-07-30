@@ -6,6 +6,5 @@ use better_builder::BetterBuilder;
 struct Cart {}
 
 fn main() {
-    let _t = Cart::builder()
-        .build();
+    let _t = Cart::builder().build();
 }

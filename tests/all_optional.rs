@@ -9,7 +9,8 @@ struct Cart {
     num_seats: Option<u8>,
 }
 
-fn main() {
+#[test]
+fn all_optional() {
     let t = Cart::builder()
         .owner(Some("Alice".to_string()))
         .num_wheels(Some(4))
@@ -26,7 +27,7 @@ fn main() {
     assert_eq!(t.owner, Some("Alice".to_string()));
     assert_eq!(t.num_wheels, Some(4));
     assert_eq!(t.num_seats, None);
-    
+
     let t = Cart::builder()
         .num_seats(Some(2))
         .num_wheels(Some(4))

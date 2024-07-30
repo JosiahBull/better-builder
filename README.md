@@ -1,7 +1,5 @@
 # BetterBuilder
 
-[![codecov](https://codecov.io/github/JosiahBull/better-builder/graph/badge.svg?token=qqd6LSTTda)](https://codecov.io/github/JosiahBull/better-builder)
-
 This rust crate aims to create better type-safe builders. Builders must fully provide all required and any optional fields before the end type can be instantiated.
 
 tldr; No more `.build()?`, just `.build()` - and leverage the Rust type system to your advantage!
@@ -10,6 +8,7 @@ tldr; No more `.build()?`, just `.build()` - and leverage the Rust type system t
 
 **Cargo Add**
 Run the command:
+
 ```shell
 cargo add better_builder
 ```
@@ -51,6 +50,10 @@ fn main() {
     assert_eq!(t.inventory, vec!["apple".to_string(), "banana".to_string()]);
 }
 ```
+
+# Semantic Versioning & MSRV
+
+This project follows semantic versioning. The minimum supported Rust version (MSRV) is `1.59.0`.
 
 # Licensing and Contributions
 

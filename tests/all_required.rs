@@ -9,13 +9,15 @@ struct Cart {
     num_seats: u8,
 }
 
-fn main() {
+#[test]
+fn test_all_required() {
     let t = Cart::builder()
-        .owner(Some("Alice".to_string()))
-        .num_wheels(Some(4))
-        .num_seats(Some(2))
+        .owner("Alice".to_string())
+        .num_wheels(4)
+        .num_seats(2)
         .build();
-    assert_eq!(t.owner, Some("Alice".to_string()));
-    assert_eq!(t.num_wheels, Some(4));
-    assert_eq!(t.num_seats, Some(2));
+
+    assert_eq!(t.owner, "Alice".to_string());
+    assert_eq!(t.num_wheels, 4u8);
+    assert_eq!(t.num_seats, 2u8);
 }
