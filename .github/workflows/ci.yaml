@@ -57,6 +57,9 @@ jobs:
           # Extract the MSRV from rust-toolchain
           toolchain_msrv=$(cat rust-toolchain)
 
+          # Extract the MSRV from rust-toolchain
+          toolchain_msrv=$(cat rust-toolchain)
+
           # Compare versions
           if [ "$readme_msrv" != "$test_msrv" ]; then
             echo "MSRV mismatch: README.md ($readme_msrv) != .github/workflows/test.yaml ($test_msrv)"
