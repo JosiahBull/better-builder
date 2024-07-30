@@ -1,5 +1,6 @@
 //! This test checks that the macro can be used when the renaming may create multiple duplicate
 //! fields.
+#![allow(non_snake_case)]
 
 use better_builder::BetterBuilder;
 
@@ -14,7 +15,7 @@ struct Cart {
 
 fn main() {
     let t = Cart::builder()
-        .num_wheels1(4u8)
+        .num_wheels(4u8)
         .NuMWheels(8u16)
         .num_Wheels(16u32)
         .num_wheels_(32u64)

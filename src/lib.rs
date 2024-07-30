@@ -3,7 +3,7 @@
 use std::{cell::RefCell, collections::HashMap};
 
 use proc_macro::TokenStream;
-use quote::{quote, ToTokens};
+use quote::quote;
 
 type Result<T> = std::result::Result<T, syn::Error>;
 
@@ -33,7 +33,7 @@ struct FieldData<'a> {
 }
 
 impl<'a> FieldData<'a> {
-    fn new(ident: &'a syn::Ident, ty: &'a syn::Type) -> Self {
+    const fn new(ident: &'a syn::Ident, ty: &'a syn::Type) -> Self {
         Self {
             ident,
             ty,
@@ -81,7 +81,7 @@ impl<'a> FieldData<'a> {
         let orig_field_name = &self.ident;
         let field_name = convert_snake_case_to_upper_camel_case(orig_field_name);
 
-        let mut builder_name = format!("{}BuilderMissing{}", parent_struct_name, field_name);
+        let mut builder_name = format!("{parent_struct_name}BuilderMissing{field_name}");
         let count = other_builders.entry(builder_name.clone()).or_insert(0);
         if *count > 0 {
             builder_name.push_str(&count.to_string());
@@ -104,7 +104,6 @@ impl<'a> FieldData<'a> {
         quote! {
             #field_name: #field_type,
         }
-        .into()
     }
 }
 
@@ -175,17 +174,17 @@ impl<'a> BetterBuilderGenerator<'a> {
         &self.fields
     }
 
-    pub fn visibility(&self) -> &syn::Visibility {
+    pub const fn visibility(&self) -> &syn::Visibility {
         &self.original_data.vis
     }
 
-    pub fn struct_name(&self) -> &syn::Ident {
+    pub const fn struct_name(&self) -> &syn::Ident {
         &self.original_data.ident
     }
 
     pub fn final_builder_name(&self) -> syn::Ident {
         let struct_name = self.struct_name();
-        let builder_name = format!("{}Builder", struct_name);
+        let builder_name = format!("{struct_name}Builder");
         syn::Ident::new(&builder_name, struct_name.span())
     }
 
@@ -228,6 +227,35 @@ impl<'a> BetterBuilderGenerator<'a> {
             }
         });
 
+        let first_builder = {
+            // If the first field is optional we need to initialise the final builder with all None
+            // values.
+
+            // Otherwise, just initialise the final builder with no fields.
+
+            match self.fields.first() {
+                Some(field) if !field.is_optional() => {
+                    let first_builder_name =
+                        field.generate_builder_name(struct_name, &mut HashMap::new());
+                    quote! {
+                        pub fn builder() -> #first_builder_name {
+                            #first_builder_name {}
+                        }
+                    }
+                }
+                _ => {
+                    let optional_fields = self.optional_names();
+                    quote! {
+                        pub fn builder() -> #builder_name {
+                            #builder_name {
+                                #(#optional_fields: None,)*
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
         quote! {
             #visibility struct #builder_name {
                 #(#struct_fields)*
@@ -242,11 +270,14 @@ impl<'a> BetterBuilderGenerator<'a> {
                     }
                 }
             }
+
+            impl #struct_name {
+                #first_builder
+            }
         }
     }
 }
 
-#[allow(clippy::too_many_lines)]
 fn implementation_better_builder(input: &syn::DeriveInput) -> Result<TokenStream> {
     let struct_data = BetterBuilderGenerator::new(input)?;
 
@@ -255,6 +286,10 @@ fn implementation_better_builder(input: &syn::DeriveInput) -> Result<TokenStream
     let mut culm_tokens = quote! {};
 
     for (index, field) in struct_data.fields().iter().enumerate() {
+        if field.is_optional() {
+            break;
+        }
+
         let field_name = field.ident;
         let field_type = field.ty;
         let builder_name =
@@ -266,42 +301,46 @@ fn implementation_better_builder(input: &syn::DeriveInput) -> Result<TokenStream
             .fold(quote! {}, |acc, x| quote! { #acc #x });
 
         let builder_fields = fields_used_so_far.iter().map(|a| a.ident);
+        let visibility = struct_data.visibility();
 
-        let builder = if let Some(next_field) = struct_data.fields().get(index + 1) {
-            let visibility = struct_data.visibility();
-            let next_builder_name =
+        let builder = match struct_data.fields().get(index + 1) {
+            Some(next_field) if !next_field.is_optional() => {
+                let next_builder_name =
                 next_field.generate_builder_name(struct_data.struct_name(), &mut other_builders);
 
-            quote! {
-                #visibility struct #builder_name {
-                    #struct_def_fields
-                }
+                quote! {
+                    #visibility struct #builder_name {
+                        #struct_def_fields
+                    }
 
-                impl #builder_name {
-                    pub fn #field_name(self, #field_name: #field_type) -> #next_builder_name {
-                        #next_builder_name {
-                            #field_name,
-                            #(#builder_fields: self.#builder_fields,)*
+                    impl #builder_name {
+                        pub fn #field_name(self, #field_name: #field_type) -> #next_builder_name {
+                            #next_builder_name {
+                                #field_name,
+                                #(#builder_fields: self.#builder_fields,)*
+                            }
                         }
                     }
                 }
-            }
-        } else {
-            let final_builder = struct_data.generate_final_builder();
-            let final_builder_name = struct_data.final_builder_name();
-            let optional_fields = struct_data.optional_names();
-            quote! {
-                impl #builder_name {
-                    pub fn #field_name(self, #field_name: #field_type) -> #final_builder_name {
-                        #final_builder_name {
-                            #field_name,
-                            #(#builder_fields: self.#builder_fields,)*
-                            #(#optional_fields: self.#optional_fields,)*
+            },
+            _ => {
+                let final_builder_name = struct_data.final_builder_name();
+                let optional_fields = struct_data.optional_names();
+                quote! {
+                    #visibility struct #builder_name {
+                        #struct_def_fields
+                    }
+
+                    impl #builder_name {
+                        pub fn #field_name(self, #field_name: #field_type) -> #final_builder_name {
+                            #final_builder_name {
+                                #field_name,
+                                #(#builder_fields: self.#builder_fields,)*
+                                #(#optional_fields: None,)*
+                            }
                         }
                     }
                 }
-
-                #final_builder
             }
         };
 
@@ -309,119 +348,16 @@ fn implementation_better_builder(input: &syn::DeriveInput) -> Result<TokenStream
         fields_used_so_far.push(field);
     }
 
-    // // Generate the actual builder struct, which should include methods for only the optional fields.
-    // let builder_fields = required_fields
-    //     .iter()
-    //     .chain(optional_fields.iter())
-    //     .map(|field| {
-    //         let field_name = field.ident.as_ref().unwrap();
-    //         let field_type = &field.ty;
-    //         quote! {
-    //             #field_name: #field_type,
-    //         }
-    //     });
-
-    // let first_struct_name = required_fields
-    //     .first()
-    //     .map(|field| field.ident.as_ref().unwrap());
-    // let first_builder_name = first_struct_name.map_or_else(
-    //     || {
-    //         let builder_name = format!("{struct_name}Builder");
-    //         syn::Ident::new(&builder_name, struct_name.span())
-    //     },
-    //     |first_struct_name| {
-    //         let builder_name = format!(
-    //             "{}BuilderMissing{}",
-    //             struct_name,
-    //             convert_snake_case_to_upper_camel_case(first_struct_name)
-    //         );
-    //         syn::Ident::new(&builder_name, first_struct_name.span())
-    //     },
-    // );
-    // // If the first builder is the final builder, then we need to initialise all optional fields to
-    // // None.
-    // let first_builder_optional_fields = if first_struct_name.is_some() {
-    //     quote! {}
-    // } else {
-    //     let optional_fields = optional_fields.iter().map(|field| {
-    //         let field_name = field.ident.as_ref().unwrap();
-    //         quote! {
-    //             #field_name: None,
-    //         }
-    //     });
-
-    //     quote! {
-    //         #(#optional_fields)*
-    //     }
-    // };
-
-    // let builder_struct_name = format!("{struct_name}Builder");
-    // let builder_struct_name = syn::Ident::new(&builder_struct_name, struct_name.span());
-
-    // let optional_field_setter_methods = optional_fields.iter().map(|field| {
-    //     let field_name = field.ident.as_ref().unwrap();
-    //     // Field Type is Option<T> so we need to strip the Option.
-    //     let field_type = &field.ty;
-    //     quote! {
-    //         pub fn #field_name(mut self, #field_name: #field_type) -> Self {
-    //             self.#field_name = #field_name;
-    //             self
-    //         }
-    //     }
-    // });
-
-    // let struct_constructor_all_fields = required_fields
-    //     .iter()
-    //     .map(|field| {
-    //         let field_name = field.ident.as_ref().unwrap();
-    //         quote! {
-    //             #field_name: self.#field_name,
-    //         }
-    //     })
-    //     .chain(optional_fields.iter().map(|field| {
-    //         let field_name = field.ident.as_ref().unwrap();
-    //         quote! {
-    //             #field_name: self.#field_name,
-    //         }
-    //     }));
-
-    // let builder_struct = quote! {
-    //     #visibility struct #builder_struct_name {
-    //         #(#builder_fields)*
-    //     }
-
-    //     impl #builder_struct_name {
-    //         #(#optional_field_setter_methods)*
-
-    //         pub fn build(self) -> #struct_name {
-    //             #struct_name {
-    //                 #(#struct_constructor_all_fields)*
-    //             }
-    //         }
-    //     }
-
-    //     impl #struct_name {
-    //         pub fn builder() -> #first_builder_name {
-    //             #first_builder_name {
-    //                 #first_builder_optional_fields
-    //             }
-    //         }
-    //     }
-    // };
-
-    // builder_structs.push(builder_struct);
-
-    // Combine all the generated code into a single TokenStream.
+    let final_builder = struct_data.generate_final_builder();
     let output = quote! {
-        // #(#builder_structs)*
+        #culm_tokens
+        #final_builder
     };
 
     Ok(output.into())
 }
 
 #[proc_macro_derive(BetterBuilder)]
-// TODO: address lints.
-#[allow(clippy::too_many_lines, clippy::missing_panics_doc)]
 pub fn derive_better_builder(item: TokenStream) -> TokenStream {
     let input = syn::parse_macro_input!(item as syn::DeriveInput);
     match implementation_better_builder(&input) {

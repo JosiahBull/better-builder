@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file. This projec
 
 ## [Unreleased]
 
+- `BetterBuilder` now supports similarly named fields.
 - MSRV updated to. at `1.70.0`.
 
 ## [0.1.0] - 2024-07-30
