@@ -1,8 +1,14 @@
 # BetterBuilder
 
+[![crates.io](https://img.shields.io/crates/v/better-builder?style=flat-square&logo=rust)](https://crates.io/crates/better-builder)
+[![license](https://img.shields.io/badge/license-Apache--2.0_OR_MIT-blue?style=flat-square)](#license)
+[![github actions](https://img.shields.io/github/actions/workflow/status/josiahbull/better-builder/ci.yaml?branch=main&style=flat-square&logo=github)](https://github.com/josiahbull/better-builder/actions)
+[![docs.rs](https://img.shields.io/docsrs/better-builder?style=flat-square&logo=rust)](https://docs.rs/better-builder)
+<!-- [![codecov](https://img.shields.io/codecov/c/github/josiahbull/better-builder?style=flat-square&logo=codecov)](https://codecov.io/gh/josiahbull/better-builder) -->
+
 This rust crate aims to create better type-safe builders. Builders must fully provide all required and any optional fields before the end type can be instantiated.
 
-tldr; No more `.build()?`, just `.build()` - and leverage the Rust type system to your advantage!
+tldr; No more `.build().unwrap()`, just `.build()` - and leverage the Rust type system to your advantage!
 
 ## Installation
 
@@ -52,17 +58,15 @@ fn main() {
 }
 ```
 
-# Semantic Versioning & MSRV
+## Semantic Versioning and MSRV
 
 This project follows semantic versioning. The minimum supported Rust version (MSRV) is `1.70.0`.
 
-# Licensing and Contributions
+## License
 
-This project is licensed under the MIT License and ApacheV2 at your option.. You can find the full
-text of these licenses in the `LICENSE-MIT` and `LICENSE-APACHE` files included in the repository.
+Licensed under either of [Apache License, Version 2.0](LICENSE-APACHE) or
+[MIT license](LICENSE-MIT) at your option.
 
-Contributions to this project are welcomed and will also be licensed under the same terms. By
-submitting a pull request or contributing in any other way, you agree to license your contributions
-under the MIT License and Apache.
-
-We value and appreciate all contributions to make this project better!
+Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in the work by you, as defined in the Apache-2.0 license, shall
+be dual licensed as above, without any additional terms or conditions.

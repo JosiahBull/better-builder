@@ -11,8 +11,12 @@ fn macro_successes() {
     t.pass("tests/compile_tests/should_pass/basic.rs");
     t.pass("tests/compile_tests/should_pass/all_optional.rs");
     t.pass("tests/compile_tests/should_pass/all_required.rs");
-    // t.pass("tests/compile_tests/should_pass/duplicates.rs");
+    // t.pass("tests/compile_tests/should_pass/generics.rs");
+    t.pass("tests/compile_tests/should_pass/duplicates.rs");
     // t.pass("tests/compile_tests/should_pass/function_collision.rs");
     t.pass("tests/compile_tests/should_pass/no_fields.rs");
     // t.pass("tests/compile_tests/should_pass/trait_derivation.rs");
+
+    // TODO: add tests for feature flags in the future;
+    // https://github.com/dtolnay/trybuild/issues/108
 }
