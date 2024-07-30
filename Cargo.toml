@@ -16,6 +16,7 @@ exclude = ["tests/*", ".github/*"]
 proc-macro = true
 
 [dependencies]
+# TODO: remove dependency on proc-marco2
 proc-macro2 = "1.0.86"
 syn = { version = "2.0.72", features = ["extra-traits"] }
 quote = "1.0.36"
