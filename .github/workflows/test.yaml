@@ -8,6 +8,7 @@ on:
 env:
   RUST_TOOLCHAIN: 1.70.0
   TOOLCHAIN_PROFILE: minimal
+  RUST_VERSION: 1.51.0
 
 jobs:
   test:
