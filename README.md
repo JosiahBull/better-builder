@@ -54,7 +54,7 @@ fn main() {
 
 # Semantic Versioning & MSRV
 
-This project follows semantic versioning. The minimum supported Rust version (MSRV) is `1.65.0`.
+This project follows semantic versioning. The minimum supported Rust version (MSRV) is `1.70.0`.
 
 # Licensing and Contributions
 
