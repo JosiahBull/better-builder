@@ -1,3 +1,5 @@
+#![warn(clippy::pedantic, clippy::nursery, clippy::all)]
+
 use proc_macro::TokenStream;
 use quote::quote;
 
@@ -70,7 +72,8 @@ pub fn derive_better_builder(item: TokenStream) -> TokenStream {
                     .segments
                     .iter()
                     .next()
-                    .is_some_and(|segment| segment.ident != "Option"),
+                    .map(|segment| segment.ident != "Option")
+                    .unwrap_or(false),
                 _ => false,
             };
 
