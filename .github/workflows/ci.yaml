@@ -58,7 +58,7 @@ jobs:
           toolchain_msrv=$(cat rust-toolchain)
 
           # Extract the MSRV from .github/workflows/ci.yaml
-          ci_msrv=$(grep -oP 'RUST_VERSION: \K([0-9]+\.[0-9]+\.[0-9]+)' .github/workflows/ci.yaml)
+          ci_msrv=$(grep -oP 'RUST_TOOLCHAIN: \K([0-9]+\.[0-9]+\.[0-9]+)' .github/workflows/ci.yaml)
 
           # Extract the MSRV from rust-toolchain
           toolchain_msrv=$(cat rust-toolchain)
