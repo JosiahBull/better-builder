@@ -16,7 +16,7 @@ cargo add better_builder
 **Cargo Toml**
 
 ```toml
-better_builder = "0.1"
+better_builder = "0.1.0"
 ```
 
 ## Example Usage
@@ -53,7 +53,7 @@ fn main() {
 
 # Semantic Versioning & MSRV
 
-This project follows semantic versioning. The minimum supported Rust version (MSRV) is `1.59.0`.
+This project follows semantic versioning. The minimum supported Rust version (MSRV) is `1.51.0`.
 
 # Licensing and Contributions
 

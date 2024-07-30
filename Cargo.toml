@@ -1,7 +1,7 @@
 [package]
 name = "better-builder"
 version = "0.1.0"
-edition = "2021"                                                                                            # TODO, we can probably change this to 2018.
+edition = "2021"
 authors = ["Josiah Bull <josiah.bull7@gmail.com>"]
 description = "A library to derive an improved builder pattern for structs, leveraging Rust's type system."
 license = "MIT OR Apache-2.0"

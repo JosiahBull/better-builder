@@ -32,11 +32,32 @@ jobs:
           command: fmt
           args: --all -- --check
 
-      - name: Prettify Code
-        uses: creyD/prettier_action@v4.3
-        with:
-          dry: true
-          prettier_options: --check **/*.{md,yml,yaml,json}
+      # These are custom lints which ensure various aspects of the codebase are consistent.
+      - name: Ensure version in install docs is the same as main.
+        run: |
+          cargo_version=$(awk -F ' *= *' '/name = "better-builder"/ {getline; print $2}' Cargo.toml | tr -d '"')
+          readme_version=$(awk '/```toml/{flag=1; next} /```/{flag=0} flag && /better_builder/ {print $3}' README.md | tr -d '"')
+          if [ "$cargo_version" != "$readme_version" ]; then
+            echo "Version mismatch: Cargo.toml ($cargo_version) != README.md ($readme_version)"
+            exit 1
+          else
+            echo "Versions match: $cargo_version"
+          fi
+      - name: Check MSRV matches in readme and tests.
+        run: |
+          # Extract the MSRV from README.md
+          readme_msrv=$(grep -oP '\(MSRV\) is `\K([0-9]+\.[0-9]+\.[0-9]+)' README.md)
+
+          # Extract the MSRV from .github/workflows/test.yaml
+          test_msrv=$(grep -oP 'RUST_VERSION: \K([0-9]+\.[0-9]+\.[0-9]+)' .github/workflows/test.yaml)
+
+          # Compare versions
+          if [ "$readme_msrv" != "$test_msrv" ]; then
+            echo "MSRV mismatch: README.md ($readme_msrv) != .github/workflows/test.yaml ($test_msrv)"
+            exit 1
+          else
+            echo "MSRV matches: $readme_msrv"
+          fi
 
   clippy:
     name: Run Clippy

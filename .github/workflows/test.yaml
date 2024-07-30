@@ -7,6 +7,7 @@ on:
 
 env:
   TOOLCHAIN_PROFILE: minimal
+  RUST_VERSION: 1.51.0
 
 jobs:
   test:
@@ -16,11 +17,8 @@ jobs:
       matrix:
         include:
           - os: windows-latest
-            rust: 1.59.0
           - os: macos-latest
-            rust: 1.59.0
           - os: ubuntu-latest
-            rust: 1.59.0
     permissions:
       contents: read
 
@@ -31,7 +29,7 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           profile: ${{ env.TOOLCHAIN_PROFILE }}
-          toolchain: ${{ matrix.rust }}
+          toolchain: ${{ env.RUST_VERSION }}
           override: true
       - name: Setup Rust cache
         uses: Swatinem/rust-cache@v2
