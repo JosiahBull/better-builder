@@ -1,4 +1,5 @@
 #![warn(clippy::pedantic, clippy::nursery, clippy::all)]
+#![allow(elided_lifetimes_in_paths)]
 
 use std::{cell::RefCell, collections::HashMap};
 
