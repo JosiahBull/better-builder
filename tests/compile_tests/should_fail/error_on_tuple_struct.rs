@@ -1,5 +1,3 @@
-// TODO: eventually this test case should pass.
-
 use better_builder::BetterBuilder;
 
 #[derive(BetterBuilder)]
