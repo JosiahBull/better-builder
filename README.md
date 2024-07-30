@@ -7,15 +7,17 @@ tldr; No more `.build()?`, just `.build()` - and leverage the Rust type system t
 ## Installation
 
 **Cargo Add**
+
 Run the command:
+
 ```shell
 cargo add better_builder
 ```
 
-**Cargol Toml**
+**Cargo.toml**
 
 ```toml
-better_builder = "0.1"
+better_builder = "0.1.0"
 ```
 
 ## Example Usage
@@ -49,6 +51,10 @@ fn main() {
     assert_eq!(t.inventory, vec!["apple".to_string(), "banana".to_string()]);
 }
 ```
+
+# Semantic Versioning & MSRV
+
+This project follows semantic versioning. The minimum supported Rust version (MSRV) is `1.70.0`.
 
 # Licensing and Contributions
 

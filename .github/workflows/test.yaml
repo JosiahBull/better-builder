@@ -1,0 +1,44 @@
+name: CI
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+env:
+  RUST_TOOLCHAIN: 1.70.0
+  TOOLCHAIN_PROFILE: minimal
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+          - os: windows-latest
+          - os: macos-latest
+      fail-fast: true
+      max-parallel: 1
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v4
+      - name: Set up Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: ${{ env.TOOLCHAIN_PROFILE }}
+          toolchain: ${{ env.RUST_TOOLCHAIN }}
+          override: true
+      - name: Setup Rust cache
+        uses: Swatinem/rust-cache@v2
+      # TODO: coverage
+      - name: Run tests
+        timeout-minutes: 10
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --all-features --all

@@ -26,7 +26,7 @@ fn main() {
     assert_eq!(t.owner, Some("Alice".to_string()));
     assert_eq!(t.num_wheels, Some(4));
     assert_eq!(t.num_seats, None);
-    
+
     let t = Cart::builder()
         .num_seats(Some(2))
         .num_wheels(Some(4))
