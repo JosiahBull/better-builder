@@ -6,6 +6,8 @@
 [![docs.rs](https://img.shields.io/docsrs/better-builder?style=flat-square&logo=rust)](https://docs.rs/better-builder)
 <!-- [![codecov](https://img.shields.io/codecov/c/github/josiahbull/better-builder?style=flat-square&logo=codecov)](https://codecov.io/gh/josiahbull/better-builder) -->
 
+## :warning: Users of this crate should go look for the excellent [`const_typed_builder`](https://github.com/koenichiwa/const_typed_builder/) crate by koenichiwa. :warning:
+
 This rust crate aims to create better type-safe builders. Builders must fully provide all required and any optional fields before the end type can be instantiated.
 
 tldr; No more `.build().unwrap()`, just `.build()` - and leverage the Rust type system to your advantage!
